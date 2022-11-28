@@ -179,14 +179,27 @@ node_t *rbtree_min(const rbtree *t) {
 node_t *rbtree_max(const rbtree *t) {
     // TODO: implement find
     // 최대값을 가진 node pointer 반환
+
   return t->root;
+}
+
+void del_one(rbtree *t, node_t *n)
+{
+	if (n != t -> nil)
+	{
+		del_one(t, n -> left);
+		del_one(t, n -> right);
+		free(n);
+	}
 }
 
 void delete_rbtree(rbtree *t) {
   // TODO: reclaim the tree nodes's memory
 //   * delete_tree(tree): RB tree 구조체가 차지했던 메모리 반환
 //     * 해당 tree가 사용했던 메모리를 전부 반환해야 합니다. (valgrind로 나타나지 않아야 함)
-  free(t);
+	del_one(t, t -> root);
+	free(t -> nil);
+	free(t);
 }
 
 int rbtree_erase(rbtree *t, node_t *p) {
