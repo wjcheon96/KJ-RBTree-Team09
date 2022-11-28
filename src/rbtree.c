@@ -7,7 +7,7 @@ rbtree *new_rbtree(void)
   // * tree = new_tree(): RB tree 구조체 생성
   // * 여러 개의 tree를 생성할 수 있어야 하며 각각 다른 내용들을 저장할 수 있어야 합니다.
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
-  rbtree *nil = (node_t *)calloc(1, sizeof(node_t));
+  node_t *nil = (node_t *)calloc(1, sizeof(node_t));
 
   p->root = nil;
   p->nil = nil;
