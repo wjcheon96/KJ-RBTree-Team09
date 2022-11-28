@@ -30,6 +30,8 @@ rbtree_insert_fixup	rbtree.c	/^node_t *rbtree_insert_fixup(rbtree *t, node_t *z)
 rbtree_max	rbtree.c	/^node_t *rbtree_max(const rbtree *t) {$/;"	f
 rbtree_min	rbtree.c	/^node_t *rbtree_min(const rbtree *t) {$/;"	f
 rbtree_to_array	rbtree.c	/^int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {$/;"	f
+rbtree_transplant	rbtree.c	/^void rbtree_transplant(rbtree *t, node_t *u, node_t *v)$/;"	f
 right	rbtree.h	/^  struct node_t *parent, *left, *right;$/;"	m	struct:node_t	typeref:struct:node_t::
 right_rotate	rbtree.c	/^void right_rotate(rbtree *t, node_t *y){$/;"	f
 root	rbtree.h	/^  node_t *root;$/;"	m	struct:__anon2
+tree_min	rbtree.c	/^node_t *tree_min(rbtree *t, node_t *n)$/;"	f

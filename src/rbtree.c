@@ -6,16 +6,10 @@ rbtree *new_rbtree(void) {
     // * tree = new_tree(): RB tree 구조체 생성
     // * 여러 개의 tree를 생성할 수 있어야 하며 각각 다른 내용들을 저장할 수 있어야 합니다.
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
-  node_t * nil = (node_t *)calloc(1, sizeof(node_t));
 
-  p->root = nil;
-  p->nil = nil;
-
-  nil->color = RBTREE_BLACK;
-  nil->parent = nil;
-  nil->left = nil;
-  nil->right = nil;
-
+  p->nil = (node_t *)calloc(1, sizeof(node_t));
+  p->nil->color = RBTREE_BLACK;
+  p->root = p->nil;
   return p;
 }
 
@@ -148,7 +142,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   z->right = t->nil;
   z->color = RBTREE_RED;
   rbtree_insert_fixup(t,z);
-  return t->root;
+  return t -> root;
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key) {
@@ -170,11 +164,20 @@ node_t *rbtree_find(const rbtree *t, const key_t key) {
   return NULL;
 }
 
+node_t *tree_min(rbtree *t, node_t *n)
+{
+	node_t *new_node = t -> root;
+	while (new_node -> left != t -> nil)
+		new_node = new_node -> left;
+	return new_node;
+}	
+
 node_t *rbtree_min(const rbtree *t) {
   // TODO: implement find
   // RB tree 중 최소 값을 가진 node pointer 반환
   return t->root;
 }
+
 
 node_t *rbtree_max(const rbtree *t) {
     // TODO: implement find
@@ -202,12 +205,61 @@ void delete_rbtree(rbtree *t) {
 	free(t);
 }
 
+void rbtree_transplant(rbtree *t, node_t *u, node_t *v)
+{
+	if (u -> parent == t -> nil)
+		t -> root = v;
+	else if (u == u -> parent -> left)
+		u -> parent -> left = v;
+	else
+		u -> parent -> right = v;
+	v -> parent = u -> parent;
+}
+
+int rbtree_erase_fixup(rbtree *t, node_t *x)
+{
+
+}
+
 int rbtree_erase(rbtree *t, node_t *p) {
     //   TODO: implement erase
     // RB tree 내부의 ptr로 지정된 node를 삭제하고 메모리 반환
-  return 0;
-}
+	node_t	*y;
+	node_t	*x;
+	color_t	y_original_color;
 
+	if (p -> left == t -> nil)
+	{
+		x = p -> right;
+		rbtree_transplant(t, p, p -> right);
+	}
+	else if (p -> right == t -> nil)
+	{
+		x = p -> left;
+		rbtree_transplant(t, p, p -> left);
+	}
+	else
+	{
+		y = tree_min(t, p -> right);
+		y_original_color = y -> color;
+		x = y -> right;
+		if (y -> parent == p)
+			x -> parent = y;
+		else
+		{
+			rbtree_transplant(t, y, y-> right);
+			y -> right = p -> right;
+			y -> right -> parent = y;
+		}
+		rbtree_transplant(t, p, y);
+		y -> left = p -> left;
+		y -> left -> parent = y;
+		y -> color = p -> color;
+	}
+	if (y_original_color == RBTREE_BLACK)
+		rbtree_erase_fixup(t, x);
+	return 0;
+}
 
 int in_order(node_t *cur, key_t *arr, size_t n, int index,const rbtree *t){
   if (cur == t->nil)
