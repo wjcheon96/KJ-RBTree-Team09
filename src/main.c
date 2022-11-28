@@ -6,7 +6,7 @@ int main(void){
     rbtree_insert(t, 17);
     rbtree_insert(t, 41);
     rbtree_insert(t, 47);
-    rbtree_insert(t, 21);
+    rbtree_insert(t, 21); 
     rbtree_find(t,21);
 
     int arr[100] = {0,};
