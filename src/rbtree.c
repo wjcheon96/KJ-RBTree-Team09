@@ -225,7 +225,6 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
   cur = t->root;
   
   in_order(cur, arr, n, 0, t);
-  printf("\n\n");
   
   for (int i =0; i<5; i++){
       printf("%d\n", arr[i]);
