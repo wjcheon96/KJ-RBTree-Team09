@@ -13,9 +13,9 @@ rbtree *new_rbtree(void)
   p->nil = nil;
 
   nil->color = RBTREE_BLACK;
-  nil->parent = nil;
-  nil->left = nil;
-  nil->right = nil;
+  
+  // nil->left = nil;
+  // nil->right = nil;
 
     // rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
 
@@ -24,7 +24,7 @@ rbtree *new_rbtree(void)
     // p->root = p->nil;
     // return p;
 
-  // return p;
+  return p;
 }
 
 void right_rotate(rbtree *t, node_t *y)
@@ -54,18 +54,23 @@ void left_rotate(rbtree *t, node_t *x)
   node_t *y = x->right;
   x->right = y->left;
 
-  if (y->left != t->nil)
+  if (y->left != t->nil){
     y->left->parent = x;
+  }
+    
 
   y->parent = x->parent;
-  if (x->parent == t->nil)
+  if (x->parent == t->nil){
     t->root = y;
-
-  else if (x == x->parent->left)
+  }
+  
+  else if (x == x->parent->left){
     x->parent->left = y;
-
-  else
+  }
+  else{
     x->parent->right = y;
+  }
+    
 
   // connect y to x
   y->left = x;
@@ -152,10 +157,13 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   while (x != t->nil)
   {
     y = x;
-    if (z->key < x->key)
+    if (z->key < x->key){
       x = x->left;
-    else
+    }
+    else{
       x = x->right;
+    }
+      
   }
   z->parent = y;
   if (y == t->nil)
@@ -178,18 +186,15 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
   // * RB tree내에 해당 key가 있는지 탐색하여 있으면 해당 node pointer 반환
   // * 해당하는 node가 없으면 NULL 반환
   node_t *cur_node = t->root;
-  // find insert z's position
-  while (cur_node != t->nil)
+  while (cur_node != t->nil && cur_node -> key != key)
   {
-    if (cur_node->key == key)
-    {
-      return cur_node;
-    }
-    else if (cur_node->key > key)
+    if (cur_node->key > key)
       cur_node = cur_node->left;
     else
       cur_node = cur_node->right;
   }
+ if (cur_node -> key == key)
+          return cur_node;
 
   return NULL;
 }
@@ -198,14 +203,25 @@ node_t *rbtree_min(const rbtree *t)
 {
   // TODO: implement find
   // RB tree 중 최소 값을 가진 node pointer 반환
-  return t->root;
+  node_t *y = t->root;
+  while (y -> left != t->nil)
+  {
+    y = y->left;
+  }
+  return y;
+  
 }
 
 node_t *rbtree_max(const rbtree *t)
 {
   // TODO: implement find
   // 최대값을 가진 node pointer 반환
-  return t->root;
+  node_t *y = t->root;
+  while (y -> right != t->nil)
+  {
+    y = y->right;
+  }
+  return y;
 }
 
 void rb_transplant(rbtree *t, node_t *u, node_t *v)
@@ -240,7 +256,7 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
 
         // case2 When the brother of the double black is black
         // and both of the brothers' children are black,
-        w->color = RBTREE_BLACK;
+        w->color = RBTREE_RED;
         x = x->parent;
       }
       else
@@ -273,7 +289,7 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
         right_rotate(t, x->parent);
         w = x->parent->left;
       }
-      if ( w->left->color == RBTREE_BLACK && w->right->color == RBTREE_BLACK){
+      if ( w->right->color == RBTREE_BLACK && w->left->color == RBTREE_BLACK){
         //case2
         w->color = RBTREE_RED;
         x = x->parent;
@@ -303,8 +319,8 @@ int rbtree_erase(rbtree *t, node_t *z)
   // RB tree 내부의 ptr로 지정된 node를 삭제하고 메모리 반환
   node_t *y = z;
   color_t y_original_color = y->color;
-  node_t *x = t->nil;
-  // Check if the number of children is 0 or 1
+  node_t *x;
+  // // Check if the number of children is 0 or 1
   if (z->left == t->nil)
   {
     x = z->right;
@@ -312,7 +328,7 @@ int rbtree_erase(rbtree *t, node_t *z)
   }
   else if (z->right == t->nil)
   {
-    x = z->right;
+    x = z->left;
     rb_transplant(t, z, z->left);
   }
   else
@@ -320,6 +336,7 @@ int rbtree_erase(rbtree *t, node_t *z)
     // y is sucessor
     y = tree_minimum( t, z->right);
     y_original_color = y->color;
+    x = y->right;
     if (y->parent == z)
       x->parent = y;
     else
@@ -343,10 +360,10 @@ int rbtree_erase(rbtree *t, node_t *z)
 node_t *tree_minimum(rbtree *t, node_t *cur)
 {
   node_t *y;
-  while (cur != t->nil)
+  y = cur;
+  while (y -> left != t->nil)
   {
-    y = cur;
-    cur = cur->left;
+    y = y->left;
   }
   return y;
 }
@@ -375,8 +392,6 @@ void delete_one(rbtree *t, node_t *cur)
 
 int in_order(const rbtree *t, node_t *cur, key_t *arr, size_t n, int index)
 {
-  if (cur == t->nil)
-    return index;
 
   if (index < n)
   {
@@ -400,10 +415,8 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
   // * array의 크기는 n으로 주어지며 tree의 크기가 n 보다 큰 경우에는 순서대로 n개 까지만 변환
   // * array의 메모리 공간은 이 함수를 부르는 쪽에서 준비하고 그 크기를 n으로 알려줍니다.
   // inorder traversing
-  node_t *cur = calloc(1, sizeof(node_t));
-  cur = t->root;
 
-  in_order(t, cur, arr, n, 0);
+  in_order(t, t->root, arr, n, 0);
 
   return 0;
 }
