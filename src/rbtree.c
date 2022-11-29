@@ -7,6 +7,7 @@ rbtree *new_rbtree(void)
   // * tree = new_tree(): RB tree 구조체 생성
   // * 여러 개의 tree를 생성할 수 있어야 하며 각각 다른 내용들을 저장할 수 있어야 합니다.
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
+
   node_t *nil = (node_t *)calloc(1, sizeof(node_t));
 
   p->root = nil;
@@ -14,6 +15,7 @@ rbtree *new_rbtree(void)
 
   nil->color = RBTREE_BLACK;
   
+
   return p;
 }
 
@@ -166,8 +168,10 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   z->left = t->nil;
   z->right = t->nil;
   z->color = RBTREE_RED;
+
   rbtree_insert_fixup(t, z);
   return z;
+
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key)
@@ -189,8 +193,10 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
   return NULL;
 }
 
+
 node_t *rbtree_min(const rbtree *t)
 {
+
   // TODO: implement find
   // RB tree 중 최소 값을 가진 node pointer 반환
   node_t *y = t->root;
@@ -201,6 +207,7 @@ node_t *rbtree_min(const rbtree *t)
   return y;
   
 }
+
 
 node_t *rbtree_max(const rbtree *t)
 {
@@ -366,6 +373,7 @@ void delete_rbtree(rbtree *t)
 
   delete_one(t,t->root);
 
+
   free(t->nil);
   free(t);
 }
@@ -405,6 +413,7 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
   // * array의 크기는 n으로 주어지며 tree의 크기가 n 보다 큰 경우에는 순서대로 n개 까지만 변환
   // * array의 메모리 공간은 이 함수를 부르는 쪽에서 준비하고 그 크기를 n으로 알려줍니다.
   // inorder traversing
+
 
   if (!in_order(t, t->root, arr, n, 0))
 	return 0;
