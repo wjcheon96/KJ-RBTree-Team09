@@ -14,16 +14,6 @@ rbtree *new_rbtree(void)
 
   nil->color = RBTREE_BLACK;
   
-  // nil->left = nil;
-  // nil->right = nil;
-
-    // rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
-
-    // p->nil = (node_t *)calloc(1, sizeof(node_t));
-    // p->nil->color = RBTREE_BLACK;
-    // p->root = p->nil;
-    // return p;
-
   return p;
 }
 
@@ -416,7 +406,8 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
   // * array의 메모리 공간은 이 함수를 부르는 쪽에서 준비하고 그 크기를 n으로 알려줍니다.
   // inorder traversing
 
-  in_order(t, t->root, arr, n, 0);
-
-  return 0;
+  if (!in_order(t, t->root, arr, n, 0))
+	return 0;
+  else
+	  return 1;
 }
